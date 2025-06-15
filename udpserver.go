@@ -45,4 +45,3 @@ func main() {
 		fmt.Printf("Réponse envoyée au client %v: %s\n", clientAddr, response)
 	}
 }
-s
