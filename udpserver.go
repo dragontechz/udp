@@ -6,43 +6,43 @@ import (
 )
 
 func main() {
-	// Create UDP address to listen on
-	udpAddr, err := net.ResolveUDPAddr("udp", ":8080")
-	if err != nil {
-		fmt.Println("Error resolving address:", err)
-		return
+	// Écouter sur le port 8080 en UDP
+	addr := net.UDPAddr{
+		Port: 8080,
+		IP:   net.ParseIP("0.0.0.0"),
 	}
-
-	// Create UDP connection
-	conn, err := net.ListenUDP("udp", udpAddr)
+	conn, err := net.ListenUDP("udp", &addr)
 	if err != nil {
-		fmt.Println("Error listening:", err)
+		fmt.Println("Erreur lors de l'écoute:", err)
 		return
 	}
 	defer conn.Close()
 
-	fmt.Println("UDP server listening on port 8080")
+	fmt.Println("Serveur UDP en écoute sur le port 8080")
 
 	buffer := make([]byte, 1024)
 
 	for {
-		// Read from UDP connection
-		n, addr, err := conn.ReadFromUDP(buffer)
+		// Lire les données du client
+		n, clientAddr, err := conn.ReadFromUDP(buffer)
 		if err != nil {
-			fmt.Println("Error reading:", err)
+			fmt.Println("Erreur lors de la lecture:", err)
 			continue
 		}
 
-		fmt.Printf("Received from %s: %s\n", addr.String(), string(buffer[:n]))
+		// Afficher ce qui a été reçu
+		received := string(buffer[:n])
+		fmt.Printf("Reçu du client %v: %s\n", clientAddr, received)
 
-		// Prepare response message
-		response := fmt.Sprintf("HTTP/1.1 200 Bytes1%sBytes0\r\n\r\n", string(buffer[:n]))
-
-		// Send response back to client
-		_, err = conn.WriteToUDP([]byte(response), addr)
+		// Envoyer la réponse au client
+		response := "HTTP/1.1 200 Bytes1"
+		_, err = conn.WriteToUDP([]byte(response), clientAddr)
 		if err != nil {
-			fmt.Println("Error writing:", err)
+			fmt.Println("Erreur lors de l'envoi de la réponse:", err)
 			continue
 		}
+
+		fmt.Printf("Réponse envoyée au client %v: %s\n", clientAddr, response)
 	}
 }
+s
