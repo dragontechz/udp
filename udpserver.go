@@ -35,7 +35,7 @@ func main() {
 		fmt.Printf("Reçu du client %v: %s\n", clientAddr, received)
 
 		// Envoyer la réponse au client
-		response := "HTTP/1.1 200 Bytes1"
+		response := "HTTP/1.1 200 Bytes1\r\n\r\n"
 		_, err = conn.WriteToUDP([]byte(response), clientAddr)
 		if err != nil {
 			fmt.Println("Erreur lors de l'envoi de la réponse:", err)
